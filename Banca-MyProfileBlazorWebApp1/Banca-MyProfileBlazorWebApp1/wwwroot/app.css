@@ -1,0 +1,51 @@
+.profile-card {
+    width: 500px;
+    max-width: 50%;
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+}
+
+.profile-image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 20px;
+}
+
+.profile-card h1 {
+    margin-bottom: 5px;
+}
+
+/* Lalagyan ng lahat ng pelikula — magkakatabi sila */
+.movies-list {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Espasyo sa pagitan ng bawat pelikula */
+    flex-wrap: wrap; /* Hindi lalabas sa gilid kapag marami */
+    margin-top: 20px;
+}
+
+/* Bawat isang pelikula */
+.movie-item {
+    text-align: center; /* Naka-gitna ang pangalan sa ilalim ng litrato */
+}
+
+/* ✅ Parisukat na litrato ng pelikula */
+.movie-img {
+    width: 120px; /* Lapad */
+    height: 120px; /* Taas — PANTAY kaya PARISUKAT ✅ */
+    object-fit: cover; /* Hindi mag-uunat-unat ang litrato */
+    border-radius: 0; /* ✅ MATULIS NA GILID — Parisukat */
+    /* Kung gusto mo medyo bilog: border-radius: 8px; */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* May kaunting anino */
+}
+
+/* Pangalan ng pelikula sa ilalim */
+.movie-item p {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #333;
+}

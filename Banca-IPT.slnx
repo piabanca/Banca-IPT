@@ -1,1 +1,9 @@
-<Solution />
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+  </Folder>
+  <Project Path="../../Users/User/OneDrive/Banca-BlazorWebApp/Banca-BlazorWebApp.csproj" />
+  <Project Path="../../Users/User/OneDrive/Banca_BlazorExam/Banca_BlazorExam/Banca_BlazorExam.csproj" />
+  <Project Path="../BancaBlazorLifeCycle/BancaBlazorLifeCycle.csproj" />
+  <Project Path="Banca-IPT/Bancaapi/Bancaapi.csproj" />
+</Solution>

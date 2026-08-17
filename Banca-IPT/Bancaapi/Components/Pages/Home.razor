@@ -1,0 +1,129 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@using Bancaapi.Models
+@using Newtonsoft.Json
+@using System.Linq
+@inject IHttpClientFactory HttpClientFactory
+
+<PageTitle>Music API Dashboard</PageTitle>
+
+<div class="dashboard-page">
+    <h1 class="main-title"> Music API Integration Project</h1>
+
+    <button class="refresh-button" @onclick="LoadAllData">
+         Reload All Sources
+    </button>
+
+    <div class="cards-container">
+       
+        <div class="card-box">
+            <h3 class="card-header"> TheAudioDB (Coldplay)</h3>
+            <div class="card-content">
+                @if (isLoading)
+                {
+                    <p class="text-muted">Loading...</p>
+                }
+                else if (artist != null)
+                {
+                    <img src="@artist.strArtistThumb" alt="@artist.strArtist" class="cover-img" />
+                    <p><strong>Artist:</strong> @artist.strArtist</p>
+                    <p><strong>Genre:</strong> @artist.strGenre</p>
+                    <p><strong>Year Formed:</strong> @artist.intFormedYear</p>
+                }
+                else
+                {
+                    <p class="text-muted">No data found.</p>
+                }
+            </div>
+        </div>
+
+       
+        <div class="card-box">
+            <h3 class="card-header"> Adrien's Tracks</h3>
+            <div class="card-content">
+                @if (isLoading)
+                {
+                    <p class="text-muted">Loading...</p>
+                }
+                else if (adrienTracks.Any())
+                {
+                    @foreach (var track in adrienTracks.Take(4))
+                    {
+                        <div class="track-row">
+                            <img src="@track.Image" alt="Cover" class="mini-cover" />
+                            <span>@track.Name</span>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted">No tracks found.</p>
+                }
+            </div>
+        </div>
+
+       
+        <div class="card-box">
+            <h3 class="card-header"> Hot Electro Tracks</h3>
+            <div class="card-content">
+                @if (isLoading)
+                {
+                    <p class="text-muted">Loading...</p>
+                }
+                else if (electroTracks.Any())
+                {
+                    @foreach (var track in electroTracks.Take(4))
+                    {
+                        <div class="track-row">
+                            <img src="@track.Image" alt="Cover" class="mini-cover" />
+                            <span>@track.Name</span>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted">No tracks found.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div> 
+@code {
+    private ArtistModel? artist;
+    private List<OpenWhydTrack> adrienTracks = new();
+    private List<OpenWhydTrack> electroTracks = new();
+    private bool isLoading;
+
+    private HttpClient Http => HttpClientFactory.CreateClient();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAllData();
+    }
+
+    private async Task LoadAllData()
+    {
+        isLoading = true;
+        try
+        {
+            
+            var url1 = $"https://www.theaudiodb.com/api/v1/json/2/search.php?s={Uri.EscapeDataString("Coldplay")}";
+            var json1 = await Http.GetStringAsync(url1);
+            var res1 = JsonConvert.DeserializeObject<ArtistResponse>(json1);
+            artist = res1?.Artists?.FirstOrDefault();
+
+           
+            var json2 = await Http.GetStringAsync("https://openwhyd.org/adrien?format=json");
+            adrienTracks = JsonConvert.DeserializeObject<List<OpenWhydTrack>>(json2) ?? new();
+
+            
+            var json3 = await Http.GetStringAsync("https://openwhyd.org/hot/electro?format=json");
+            electroTracks = JsonConvert.DeserializeObject<List<OpenWhydTrack>>(json3) ?? new();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+        finally { isLoading = false; }
+    }
+}

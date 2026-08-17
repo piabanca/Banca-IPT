@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="../../../Users/User/OneDrive/Banca_BlazorExam/Banca_BlazorExam/Banca_BlazorExam.csproj" />
+  <Project Path="../../BancaBlazorLifeCycle/BancaBlazorLifeCycle.csproj" />
+  <Project Path="../Banca-IPT/Bancaapi/Bancaapi.csproj" />
+  <Project Path="Banca-MyProfileBlazorWebApp1/Banca-MyProfileBlazorWebApp1.csproj" />
+</Solution>
