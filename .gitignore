@@ -10,3 +10,6 @@ wwwroot/js/bootstrap*.min.js
 .vs/
 *.user
 *.suo
+/Banca-ASPNetCoreAPI/wwwroot
+/Banca-BlazorWebAPI/wwwroot
+/Banca-IPT/Banca_BlazorExam/Banca_BlazorExam/wwwroot
