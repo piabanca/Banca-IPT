@@ -12,15 +12,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Models\AudioDbModel.cs">
+    <Compile Update="Models\ArtistModel.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Update="Models\DeezerModel.cs">
+    <Compile Update="Models\OpenWhydTrack.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Update="Models\ITunesModel.cs">
+    <Compile Update="Services\MusicService.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Components\Pages\Home.razor.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

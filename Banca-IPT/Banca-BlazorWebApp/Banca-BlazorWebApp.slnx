@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="../BANCA FILES/Banca-IPT/Bancaapi/Bancaapi.csproj" Id="f985e043-b29c-4308-9ec5-93cea46d3058" />
+  <Project Path="../BANCA FILES/BancaBlazorLifeCycle/BancaBlazorLifeCycle.csproj" Id="35e1277b-8a9e-444e-b482-e10de3d0c9a7" />
+  <Project Path="../Banca_BlazorExam/Banca_BlazorExam/Banca_BlazorExam.csproj" Id="1085f4c7-27d8-4ea7-aa9c-54a61c8a7476" />
+  <Project Path="Banca-BlazorWebApp.csproj" />
+</Solution>

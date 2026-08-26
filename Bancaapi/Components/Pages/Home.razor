@@ -2,473 +2,128 @@
 @rendermode InteractiveServer
 @using Bancaapi.Models
 @using Newtonsoft.Json
+@using System.Linq
+@inject IHttpClientFactory HttpClientFactory
 
-<PageTitle>My Profile</PageTitle>
+<PageTitle>Music API Dashboard</PageTitle>
 
-<div class="profile-container">
+<div class="dashboard-page">
+    <h1 class="main-title"> Music API Integration Project</h1>
 
-    <div class="cover"></div>
+    <button class="refresh-button" @onclick="LoadAllData">
+         Reload All Sources
+    </button>
 
-    <div class="profile-card">
-
-        <img class="profile-img"
-             src="images/profile.jpg"
-             alt="Profile Picture" />
-
-        <h1>Pia V. Banca</h1>
-
-        <h3>IT Student</h3>
-
-        <p class="bio">
-            To dream is to live and to pursue it is to keep on living.
-        </p>
-
-        <div class="info">
-            <span>Student ID: 24-0977</span>
-            <span>BSIT</span>
-            <span>✉ bancapia27@gmail.com</span>
-            <span></span>
+    <div class="cards-container">
+       
+        <div class="card-box">
+            <h3 class="card-header"> TheAudioDB (Coldplay)</h3>
+            <div class="card-content">
+                @if (isLoading)
+                {
+                    <p class="text-muted">Loading...</p>
+                }
+                else if (artist != null)
+                {
+                    <img src="@artist.strArtistThumb" alt="@artist.strArtist" class="cover-img" />
+                    <p><strong>Artist:</strong> @artist.strArtist</p>
+                    <p><strong>Genre:</strong> @artist.strGenre</p>
+                    <p><strong>Year Formed:</strong> @artist.intFormedYear</p>
+                }
+                else
+                {
+                    <p class="text-muted">No data found.</p>
+                }
+            </div>
         </div>
 
-        <div class="stats">
-
-            <div>
-                <h2>0</h2>
-                <p>Projects</p>
+       
+        <div class="card-box">
+            <h3 class="card-header"> Adrien's Tracks</h3>
+            <div class="card-content">
+                @if (isLoading)
+                {
+                    <p class="text-muted">Loading...</p>
+                }
+                else if (adrienTracks.Any())
+                {
+                    @foreach (var track in adrienTracks.Take(4))
+                    {
+                        <div class="track-row">
+                            <img src="@track.Image" alt="Cover" class="mini-cover" />
+                            <span>@track.Name</span>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted">No tracks found.</p>
+                }
             </div>
-
-            <div>
-                <h2>50</h2>
-                <p>Followers</p>
-            </div>
-
-            <div>
-                <h2>20</h2>
-                <p>Following</p>
-            </div>
-
         </div>
 
-        <button class="btn-save">
-            Edit Profile
-        </button>
-
+       
+        <div class="card-box">
+            <h3 class="card-header"> Hot Electro Tracks</h3>
+            <div class="card-content">
+                @if (isLoading)
+                {
+                    <p class="text-muted">Loading...</p>
+                }
+                else if (electroTracks.Any())
+                {
+                    @foreach (var track in electroTracks.Take(4))
+                    {
+                        <div class="track-row">
+                            <img src="@track.Image" alt="Cover" class="mini-cover" />
+                            <span>@track.Name</span>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted">No tracks found.</p>
+                }
+            </div>
+        </div>
     </div>
-
-</div>
-<div class="profile-container">
-    <h2 class="music-title"> Music Explorer</h2>
-    <p class="music-subtitle">Search your favourite artist and see their songs</p>
-
-    <div class="search-bar">
-        <input @bind="searchTerm" @bind:event="oninput" @onkeyup="HandleKeyUp" placeholder="Type artist name (e.g. Taylor Swift)..." class="search-input" />
-        <button class="btn-search" @onclick="SearchAll" disabled="@isLoading">
-            @if (isLoading)
-            {
-                <span class="spinner"></span>
-            }
-            else
-            {
-                <span>Search</span>
-            }
-        </button>
-    </div>
-
-    @if (!string.IsNullOrEmpty(errorMessage))
-    {
-        <p class="error-text">@errorMessage</p>
-    }
-
-    @if (!string.IsNullOrEmpty(debugLog))
-    {
-        <p class="debug-text">@debugLog</p>
-    }
-
-    @if (audioDbResult != null)
-    {
-        <div class="artist-card">
-            <img src="@audioDbResult.Thumbnail" class="artist-img" />
-            <div class="artist-info">
-                <h3>@audioDbResult.Name</h3>
-                <p>@Truncate(audioDbResult.Biography, 200)</p>
-            </div>
-        </div>
-    }
-
-    @if (isLoading)
-    {
-        <div class="songs-grid">
-            <div class="song-card-skeleton"></div>
-        </div>
-    }
-    else if (songResults != null && songResults.Any())
-    {
-        var song = songResults.First();
-
-        <div class="single-song-container">
-            <div class="song-card">
-                <span class="source-tag"> Song</span>
-                <img src="@song.ArtworkUrl" class="song-cover" />
-                <h3 class="song-title">@song.TrackName</h3>
-                <p class="song-artist">@song.ArtistName</p>
-            </div>
-
-            @if (deezerResult != null)
-            {
-                <div class="song-card">
-                   <span class="source-tag"> Album</span>
-                    <img src="@deezerResult.CoverMedium" class="song-cover" />
-                    <h3 class="song-title">@deezerResult.Title</h3>
-                    <p class="song-artist">@deezerResult.Artist?.Name</p>
-                </div>
-            
-            }
-        </div>
-    }
-    else if (hasSearched)
-    {
-        <div class="empty-state">
-            <span class="empty-icon">🔍</span>
-            <p class="placeholder-text">Walang nahanap na kanta</p>
-        </div>
-    }
-
-</div>
-
+</div> 
 @code {
-    [Inject]
-    HttpClient Http { get; set; } = default!;
+    private ArtistModel? artist;
+    private List<OpenWhydTrack> adrienTracks = new();
+    private List<OpenWhydTrack> electroTracks = new();
+    private bool isLoading;
 
-    private string searchTerm = "";
-    private bool isLoading = false;
-    private bool hasSearched = false;
-    private string errorMessage = "";
-    private string debugLog = "";
+    private HttpClient Http => HttpClientFactory.CreateClient();
 
-    private List<ITunesTrack>? songResults;
-    private AudioDbArtist? audioDbResult;
-    private DeezerAlbum? deezerResult;
-
-    async Task HandleKeyUp(KeyboardEventArgs e)
+    protected override async Task OnInitializedAsync()
     {
-        if (e.Key == "Enter")
-        {
-            await SearchAll();
-        }
+        await LoadAllData();
     }
 
-    async Task SearchAll()
+    private async Task LoadAllData()
     {
-        if (string.IsNullOrWhiteSpace(searchTerm))
-        {
-            errorMessage = "Maglagay muna ng pangalan ng artist.";
-            return;
-        }
-
         isLoading = true;
-        hasSearched = true;
-        errorMessage = "";
-        debugLog = "";
-        songResults = null;
-        audioDbResult = null;
-        deezerResult = null;
-        StateHasChanged();
-
-        var encoded = Uri.EscapeDataString(searchTerm);
-
-        // 1. iTunes - get song info
         try
         {
-            var json = await Http.GetStringAsync($"https://itunes.apple.com/search?term={encoded}&media=music&entity=song&limit=1");
-            var result = JsonConvert.DeserializeObject<ITunesResponse>(json);
-            songResults = result?.Results?.Take(1).ToList();
+            
+            var url1 = $"https://www.theaudiodb.com/api/v1/json/2/search.php?s={Uri.EscapeDataString("Coldplay")}";
+            var json1 = await Http.GetStringAsync(url1);
+            var res1 = JsonConvert.DeserializeObject<ArtistResponse>(json1);
+            artist = res1?.Artists?.FirstOrDefault();
+
+           
+            var json2 = await Http.GetStringAsync("https://openwhyd.org/adrien?format=json");
+            adrienTracks = JsonConvert.DeserializeObject<List<OpenWhydTrack>>(json2) ?? new();
+
+            
+            var json3 = await Http.GetStringAsync("https://openwhyd.org/hot/electro?format=json");
+            electroTracks = JsonConvert.DeserializeObject<List<OpenWhydTrack>>(json3) ?? new();
         }
         catch (Exception ex)
         {
-            debugLog += $"iTunes error: {ex.Message} | ";
+            Console.WriteLine($"Error: {ex.Message}");
         }
-
-        // 2. TheAudioDB - get artist bio
-        try
-        {
-            var json = await Http.GetStringAsync($"https://www.theaudiodb.com/api/v1/json/2/search.php?s={encoded}");
-            var result = JsonConvert.DeserializeObject<AudioDbResponse>(json);
-            audioDbResult = result?.Artists?.FirstOrDefault();
-        }
-        catch (Exception ex)
-        {
-            debugLog += $"AudioDB error: {ex.Message} | ";
-        }
-
-        try
-        {
-            var json = await Http.GetStringAsync($"https://api.deezer.com/search/album?q={encoded}");
-            var result = JsonConvert.DeserializeObject<DeezerAlbumResponse>(json);
-            deezerResult = result?.Data?.FirstOrDefault();
-        }
-        catch (Exception ex)
-        {
-            debugLog += $"Deezer error: {ex.Message} | ";
-        }
-
-        isLoading = false;
-        StateHasChanged();
-    }
-
-    private string Truncate(string? text, int maxLength)
-    {
-        if (string.IsNullOrEmpty(text)) return "No bio available.";
-        return text.Length <= maxLength ? text : text.Substring(0, maxLength) + "...";
+        finally { isLoading = false; }
     }
 }
-
-<style>
-    .music-container {
-        max-width: 950px;
-        margin: 0 auto;
-        padding: 30px 20px;
-        text-align: center;
-    }
-
-    .music-title {
-        color: #6a1b9a;
-        font-size: 32px;
-        margin-bottom: 5px;
-    }
-
-    .music-subtitle {
-        color: #888;
-        margin-bottom: 25px;
-    }
-
-    .search-bar {
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-        margin-bottom: 15px;
-        flex-wrap: wrap;
-    }
-
-    .search-input {
-        padding: 12px 16px;
-        border-radius: 10px;
-        border: 2px solid #e0d0e8;
-        width: 320px;
-        max-width: 100%;
-        font-size: 15px;
-        transition: border-color 0.2s ease;
-    }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #8e24aa;
-        }
-
-    .btn-search {
-        background-color: #8e24aa;
-        color: white;
-        border: none;
-        padding: 12px 30px;
-        border-radius: 10px;
-        font-weight: bold;
-        cursor: pointer;
-        min-width: 110px;
-        transition: background-color 0.2s ease, transform 0.1s ease;
-    }
-
-        .btn-search:hover:not(:disabled) {
-            background-color: #6a1b9a;
-            transform: translateY(-1px);
-        }
-
-        .btn-search:disabled {
-            background-color: #ce93d8;
-            cursor: not-allowed;
-        }
-
-    .spinner {
-        display: inline-block;
-        width: 14px;
-        height: 14px;
-        border: 2px solid rgba(255,255,255,0.5);
-        border-top-color: white;
-        border-radius: 50%;
-        animation: spin 0.7s linear infinite;
-    }
-
-    @@keyframes spin {
-        to {
-            transform: rotate(360deg);
-        }
-    }
-
-    .error-text {
-        color: #d90429;
-        margin-bottom: 10px;
-        font-weight: 500;
-    }
-
-    .debug-text {
-        color: #b45309;
-        font-size: 12px;
-        max-width: 800px;
-        margin: 0 auto 15px auto;
-        word-wrap: break-word;
-        background: #fff7ed;
-        border: 1px solid #fed7aa;
-        border-radius: 8px;
-        padding: 8px 12px;
-    }
-
-    .artist-card {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        background: linear-gradient(135deg, #f9f0fb, #f1e0f7);
-        border-radius: 16px;
-        padding: 18px 22px;
-        margin: 20px 0;
-        text-align: left;
-        box-shadow: 0 4px 14px rgba(142, 36, 170, 0.12);
-    }
-
-    .artist-img {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        object-fit: cover;
-        flex-shrink: 0;
-    }
-
-    .artist-info h3 {
-        color: #6a1b9a;
-        margin: 0 0 6px 0;
-        font-size: 18px;
-    }
-
-    .artist-info p {
-        color: #666;
-        font-size: 13px;
-        margin: 0;
-        line-height: 1.5;
-    }
-
-    .songs-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 16px;
-        margin-top: 20px;
-    }
-
-    .single-song-container {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        margin-top: 20px;
-        flex-wrap: wrap;
-    }
-
-    .song-card {
-        width: 260px;
-        background: #f9f0fb;
-        border-radius: 15px;
-        padding: 20px;
-        text-align: center;
-        box-shadow: 0 4px 12px rgba(0,0,0,.12);
-        position: relative;
-    }
-
-        .song-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(142, 36, 170, 0.15);
-        }
-
-    .source-tag {
-        display: inline-block;
-        background: #8e24aa;
-        color: white;
-        font-size: 11px;
-        font-weight: bold;
-        padding: 3px 10px;
-        border-radius: 20px;
-        margin-bottom: 10px;
-    }
-
-    @@keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(8px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .song-cover {
-        width: 180px;
-        height: 180px;
-        object-fit: cover;
-        border-radius: 12px;
-        display: block;
-        margin: 0 auto 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,.15);
-    }
-
-    .song-title {
-        font-weight: bold;
-        font-size: 15px;
-        margin: 4px 0 2px;
-        color: #333;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .song-artist {
-        color: #888;
-        font-size: 13px;
-        margin: 0;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .song-card-skeleton {
-        width: 260px;
-        height: 300px;
-        margin: 20px auto 0;
-        background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%);
-        background-size: 200% 100%;
-        animation: shimmer 1.2s infinite;
-        border-radius: 14px;
-    }
-
-    @@keyframes shimmer {
-        0% {
-            background-position: 200% 0;
-        }
-
-        100% {
-            background-position: -200% 0;
-        }
-    }
-
-    .empty-state {
-        margin-top: 40px;
-        opacity: 0.5;
-    }
-
-    .empty-icon {
-        font-size: 32px;
-        display: block;
-        margin-bottom: 8px;
-    }
-
-    .placeholder-text {
-        color: #bbb;
-        font-size: 14px;
-        margin: 0;
-    }
-</style>

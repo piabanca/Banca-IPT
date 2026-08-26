@@ -1,0 +1,226 @@
+﻿@page "/"
+@rendermode InteractiveServer
+
+@using System.Net.Http.Json
+@inject HttpClient Http
+
+<PageTitle>My Profile</PageTitle>
+
+<link href="css/Profile.css" rel="stylesheet" />
+
+<div class="profile-page">
+
+    <!-- PROFILE -->
+    <div class="profile-card">
+
+        <div class="profile-info">
+
+            <h1>@profile.FullName</h1>
+
+            <p class="program">
+                @profile.Program
+            </p>
+
+            <div class="profile-details">
+                <p>
+                    <strong>Student ID:</strong>
+                    @profile.StudentID
+                </p>
+
+                <p>
+                    <strong>Year Level:</strong>
+                    @profile.YearLevel
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ABOUT ME -->
+    <div class="about-card">
+
+        <h2>About Me</h2>
+
+        <hr />
+
+        <div class="about-grid">
+
+            <div>
+                <p>
+                    <strong>Full Name:</strong>
+                    @profile.FullName
+                </p>
+
+                <p>
+                    <strong>Student ID:</strong>
+                    @profile.StudentID
+                </p>
+
+                <p>
+                    <strong>Program:</strong>
+                    @profile.Program
+                </p>
+
+                <p>
+                    <strong>Year Level:</strong>
+                    @profile.YearLevel
+                </p>
+            </div>
+
+            <div>
+                <p>
+                    <strong>Email:</strong>
+                    @profile.Email
+                </p>
+
+                <p>
+                    <strong>Contact Number:</strong>
+                    @profile.ContactNumber
+                </p>
+
+                <p>
+                    <strong>Address:</strong>
+                    @profile.Address
+                </p>
+
+                <p>
+                    <strong>Bio:</strong>
+                    @profile.Bio
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- STOIC QUOTE API -->
+    <div class="quote-card">
+
+        <h2>Stoic Quote</h2>
+
+        <hr />
+
+        @if (loading)
+        {
+            <p>Loading quote...</p>
+        }
+        else if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <p>@errorMessage</p>
+        }
+        else if (!string.IsNullOrEmpty(quote))
+        {
+            <p class="quote-text">
+                "@quote"
+            </p>
+
+            <p class="quote-author">
+                — @author
+            </p>
+        }
+        else
+        {
+            <p>Click the button to get a quote.</p>
+        }
+
+        <button type="button" @onclick="GetQuote">
+            Get Quote
+        </button>
+
+    </div>
+
+</div>
+
+
+@code {
+
+    // PROFILE DATA
+
+    private ProfileModel profile = new()
+    {
+        FullName = "Pia V. Banca",
+        StudentID = "24-0977",
+        Program = "Bachelor of Science in Information Technology",
+        YearLevel = "3rd Year",
+        Email = "bancapia27@gmail.com",
+        ContactNumber = "0936441782",
+        Address = "Nituan Parang, Maguindanao",
+        Bio = "To dream is to live and to pursue it is to keep on living"
+    };
+
+
+    // STOIC QUOTE DATA
+
+    private string quote = "";
+    private string author = "";
+    private string errorMessage = "";
+    private bool loading = false;
+
+
+    // GET QUOTE
+
+    private async Task GetQuote()
+    {
+        loading = true;
+        errorMessage = "";
+
+        try
+        {
+            var response = await Http.GetFromJsonAsync<StoicResponse>(
+                "https://stoic.tekloon.net/stoic-quote"
+            );
+
+            if (response?.Data != null)
+            {
+                quote = response.Data.Quote;
+                author = response.Data.Author;
+            }
+            else
+            {
+                errorMessage = "No quote found.";
+            }
+        }
+        catch
+        {
+            errorMessage = "Unable to get quote.";
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+
+    // API RESPONSE
+
+    public class StoicResponse
+    {
+        public StoicQuote? Data { get; set; }
+    }
+
+
+    public class StoicQuote
+    {
+        public string Author { get; set; } = "";
+        public string Quote { get; set; } = "";
+    }
+
+
+    // PROFILE MODEL
+
+    public class ProfileModel
+    {
+        public string FullName { get; set; } = "";
+        public string StudentID { get; set; } = "";
+        public string Program { get; set; } = "";
+        public string YearLevel { get; set; } = "";
+        public string Email { get; set; } = "";
+        public string ContactNumber { get; set; } = "";
+        public string Address { get; set; } = "";
+        public string Bio { get; set; } = "";
+    }
+
+}

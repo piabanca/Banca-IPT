@@ -1,0 +1,6 @@
+@Banca_ASPNetCoreaAPI_HostAddress = http://localhost:5027
+
+GET {{Banca_ASPNetCoreaAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

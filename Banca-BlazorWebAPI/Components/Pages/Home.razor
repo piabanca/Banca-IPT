@@ -1,0 +1,235 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@using System.Net.Http.Json
+@inject HttpClient Http
+
+<PageTitle>Student Information</PageTitle>
+
+<div class="page-wrap">
+    <div class="card">
+        <div class="title-row">
+            <span class="line"></span>
+            <h1>Student Information</h1>
+            <span class="line"></span>
+        </div>
+
+        <div class="form-row">
+            <label>Fullname:</label>
+            <input @bind="fullname" />
+            <button class="btn-get" @onclick="GetFullname">GET</button>
+            <button class="btn-post" @onclick="PostFullname">POST</button>
+        </div>
+
+        <div class="form-row">
+            <label>ID No:</label>
+            <input @bind="idno" />
+            <button class="btn-get" @onclick="GetIdno">GET</button>
+            <button class="btn-post" @onclick="PostIdno">POST</button>
+        </div>
+
+        <div class="form-row">
+            <label>Program:</label>
+            <input @bind="program" />
+            <button class="btn-get" @onclick="GetProgram">GET</button>
+            <button class="btn-post" @onclick="PostProgram">POST</button>
+        </div>
+
+        <div class="form-row">
+            <label>Birthdate:</label>
+            <input @bind="birthdate" />
+            <button class="btn-get" @onclick="GetBirthdate">GET</button>
+            <button class="btn-post" @onclick="PostBirthdate">POST</button>
+        </div>
+
+        <div class="form-row">
+            <label>Age:</label>
+            <input @bind="age" />
+            <button class="btn-get" @onclick="GetAge">GET</button>
+        </div>
+
+        <hr />
+
+        <h3>Response:</h3>
+        <p class="response-box">@responseText</p>
+    </div>
+</div>
+
+<style>
+    .page-wrap {
+        display: flex;
+        justify-content: center;
+        padding: 48px 24px;
+        background: #EEF2F9;
+        min-height: 100vh;
+        box-sizing: border-box;
+    }
+
+    .card {
+        width: 100%;
+        max-width: 780px;
+        background: #F5F8FC;
+        border-radius: 16px;
+        padding: 40px 48px;
+        box-sizing: border-box;
+    }
+
+    .title-row {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        margin-bottom: 32px;
+    }
+
+        .title-row .line {
+            flex: 1;
+            height: 1px;
+            background: #1E293B;
+        }
+
+        .title-row h1 {
+            margin: 0;
+            font-size: 32px;
+            font-weight: 800;
+            color: #1E293B;
+            white-space: nowrap;
+        }
+
+    .form-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 18px;
+        gap: 10px;
+    }
+
+        .form-row label {
+            width: 100px;
+            flex-shrink: 0;
+            font-weight: 700;
+            color: #1E293B;
+        }
+
+        .form-row input {
+            flex: 1;
+            padding: 10px 12px;
+            font-size: 15px;
+            border: 1px solid #CBD5E1;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+            .form-row input:focus {
+                outline: none;
+                border-color: #2563EB;
+            }
+
+    .btn-get, .btn-post {
+        flex-shrink: 0;
+        min-width: 72px;
+        padding: 10px 14px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #FFFFFF;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .btn-get {
+        background: #2563EB;
+    }
+
+        .btn-get:hover {
+            background: #1D4ED8;
+        }
+
+    .btn-post {
+        background: #16A34A;
+    }
+
+        .btn-post:hover {
+            background: #15803D;
+        }
+
+    hr {
+        border: none;
+        border-top: 1px solid #CBD5E1;
+        margin: 24px 0;
+    }
+
+    h3 {
+        margin: 0 0 12px;
+        color: #1E293B;
+    }
+
+    .response-box {
+        margin: 0;
+        padding: 16px 20px;
+        background: #DCFCE7;
+        color: #166534;
+        border-radius: 8px;
+    }
+</style>
+
+@code {
+    private string fullname = "";
+    private string idno = "";
+    private string program = "";
+    private string birthdate = "";
+    private string age = "";
+    private string responseText = "Click a GET or POST button.";
+
+    private async Task GetFullname()
+    {
+        fullname = await Http.GetFromJsonAsync<string>("api/Student/Fullname") ?? "";
+        responseText = "GET Fullname: " + fullname;
+    }
+
+    private async Task PostFullname()
+    {
+        var response = await Http.PostAsJsonAsync("api/Student/Fullname", fullname);
+        responseText = await response.Content.ReadAsStringAsync();
+    }
+
+    private async Task GetIdno()
+    {
+        idno = await Http.GetFromJsonAsync<string>("api/Student/idno") ?? "";
+        responseText = "GET ID No: " + idno;
+    }
+
+    private async Task PostIdno()
+    {
+        var response = await Http.PostAsJsonAsync("api/Student/idno", idno);
+        responseText = await response.Content.ReadAsStringAsync();
+    }
+
+    private async Task GetProgram()
+    {
+        program = await Http.GetFromJsonAsync<string>("api/Student/program") ?? "";
+        responseText = "GET Program: " + program;
+    }
+
+    private async Task PostProgram()
+    {
+        var response = await Http.PostAsJsonAsync("api/Student/program", program);
+        responseText = await response.Content.ReadAsStringAsync();
+    }
+
+    private async Task GetBirthdate()
+    {
+        birthdate = await Http.GetFromJsonAsync<string>("api/Student/birthdate") ?? "";
+        responseText = "GET Birthdate: " + birthdate;
+    }
+
+    private async Task PostBirthdate()
+    {
+        var response = await Http.PostAsJsonAsync("api/Student/birthdate", birthdate);
+        responseText = await response.Content.ReadAsStringAsync();
+    }
+
+    private async Task GetAge()
+    {
+        var result = await Http.GetFromJsonAsync<int>("api/Student/age");
+        age = result.ToString();
+        responseText = "GET Age: " + age;
+    }
+}
