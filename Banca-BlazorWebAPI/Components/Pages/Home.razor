@@ -228,7 +228,7 @@
 
     private async Task GetAge()
     {
-        var result = await Http.GetFromJsonAsync<int>("api/Student/age");
+        var result = await Http.GetFromJsonAsync<string>("api/Student/age");
         age = result.ToString();
         responseText = "GET Age: " + age;
     }

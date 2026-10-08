@@ -11,11 +11,11 @@
     <h1 class="main-title"> Music API Integration Project</h1>
 
     <button class="refresh-button" @onclick="LoadAllData">
-         Reload All Sources
+        Reload All Sources
     </button>
 
     <div class="cards-container">
-       
+
         <div class="card-box">
             <h3 class="card-header"> TheAudioDB (Coldplay)</h3>
             <div class="card-content">
@@ -87,7 +87,7 @@
             </div>
         </div>
     </div>
-</div> 
+</div>
 @code {
     private ArtistModel? artist;
     private List<OpenWhydTrack> adrienTracks = new();
@@ -106,7 +106,7 @@
         isLoading = true;
         try
         {
-            
+
             var url1 = $"https://www.theaudiodb.com/api/v1/json/2/search.php?s={Uri.EscapeDataString("Coldplay")}";
             var json1 = await Http.GetStringAsync(url1);
             var res1 = JsonConvert.DeserializeObject<ArtistResponse>(json1);

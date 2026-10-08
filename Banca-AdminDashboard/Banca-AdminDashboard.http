@@ -1,0 +1,6 @@
+@Banca_AdminDashboard_HostAddress = http://localhost:5082
+
+GET {{Banca_AdminDashboard_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

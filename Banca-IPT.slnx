@@ -7,4 +7,7 @@
   <Project Path="../BancaBlazorLifeCycle/BancaBlazorLifeCycle.csproj" />
   <Project Path="Banca-BlazorWebAPI/Banca-BlazorWebAPI.csproj" Id="4572b275-5e4b-46ce-b0d0-8fa87b081db7" />
   <Project Path="Banca-IPT/Bancaapi/Bancaapi.csproj" />
+  <Project Path="BancaAdminDashboard2/BancaAdminDashboard.csproj" />
+  <Project Path="BancaBlazorClient/BancaBlazorClient.csproj" Id="cf074641-9539-4954-a3dc-01ce74664a44" />
+  <Project Path="BancaWebAppProfile/BancaWebAppProfile.csproj" Id="f3b7c498-7c03-4d2b-aa10-5839f501fe9e" />
 </Solution>

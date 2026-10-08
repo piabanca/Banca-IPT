@@ -1,0 +1,91 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@using System.Net.Http.Json
+@inject HttpClient Http
+
+<PageTitle>My Dashboard</PageTitle>
+
+<div class="page-wrap">
+    @if (isLoading)
+    {
+        <p>Loading...</p>
+    }
+    else if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <p class="error-box">@errorMessage</p>
+    }
+    else
+    {
+        <div class="profile-card">
+            <div class="photo-frame">
+                <img src="Images/profile.jpg" alt="@fullname" class="photo-circle" />
+            </div>
+
+            <div class="profile-details">
+                <h1 class="profile-name">@fullname</h1>
+                <span class="badge">@program</span>
+
+                <div class="divider"></div>
+
+                <div class="detail-row">
+                    <div>
+                        <p class="detail-label">Age</p>
+                        <p class="detail-value">@age</p>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div>
+                        <p class="detail-label">Address</p>
+                        <p class="detail-value">@address</p>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div>
+                        <p class="detail-label">Email</p>
+                        <p class="detail-value detail-email">@email</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private string fullname = "";
+    private string program = "";
+    private string age = "";
+    private string address = "";
+    private string email = "";
+    private bool isLoading = true;
+    private string errorMessage = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            fullname = await Http.GetStringAsync("api/Profile/Fullname");
+            program = await Http.GetStringAsync("api/Profile/Program");
+            age = await Http.GetStringAsync("api/Profile/Age");
+            address = await Http.GetStringAsync("api/Profile/Address");
+            email = await Http.GetStringAsync("api/Profile/Email");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Failed to load profile: " + ex.Message;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private string GetInitials()
+    {
+        if (string.IsNullOrWhiteSpace(fullname)) return "?";
+        var parts = fullname.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 1) return parts[0].Substring(0, 1).ToUpper();
+        return (parts[0].Substring(0, 1) + parts[^1].Substring(0, 1)).ToUpper();
+    }
+}
