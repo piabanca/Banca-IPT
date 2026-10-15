@@ -1,53 +1,136 @@
-﻿@page "/old-profile"
+﻿html, body {
+margin: 0;
+padding: 0;
+font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+background: linear-gradient(160deg, #eef2ff 0%, #f8f5ff 100%);
+min-height: 100vh;
+color: #1f2937;
+}
 
-<PageTitle>My Profile (Old)</PageTitle>
+.page-wrapper {
+min-height: 100vh;
+}
 
-<div class="profile-container">
+/* ---------- Profile page ---------- */
 
-    <div class="cover"></div>
+.profile-container {
+padding-bottom: 40px;
+}
 
-    <div class="profile-card">
+.cover {
+height: 190px;
+background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
+}
 
-        <img class="profile-img"
-             src="images/profile.jpg"
-             alt="Profile Picture" />
+.profile-card {
+position: relative;
+max-width: 420px;
+margin: -70px auto 0 auto;
+padding: 0 28px 28px 28px;
+background: #ffffff;
+border-radius: 24px;
+box-shadow: 0 12px 35px rgba(99, 102, 241, 0.2);
+text-align: center;
+}
 
-        <h1>Pia V. Banca</h1>
+.profile-img {
+width: 130px;
+height: 130px;
+margin-top: -65px;
+border-radius: 50%;
+border: 5px solid #ffffff;
+object-fit: cover;
+background: #e5e7eb;
+box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
 
-        <h3>IT Student</h3>
+.profile-card h1 {
+margin: 14px 0 4px 0;
+font-size: 1.6rem;
+font-weight: 700;
+}
 
-        <p class="bio">
-            To dream is to live and to pursue it is to keep on living.
-        </p>
+.profile-card h3 {
+margin: 0 0 14px 0;
+font-size: 1rem;
+font-weight: 500;
+color: #6366f1;
+}
 
-        <div class="info">
-            <span> Parang, Maguindanao</span>
-            <span> bancapia27@gmail.com</span>
-        </div>
+.bio {
+margin: 0 0 18px 0;
+font-style: italic;
+color: #6b7280;
+line-height: 1.5;
+}
 
-        <div class="stats">
+.info {
+display: flex;
+flex-direction: column;
+gap: 8px;
+margin-bottom: 22px;
+font-size: 0.95rem;
+color: #374151;
+}
 
-            <div>
-                <h2>0</h2>
-                <p>Projects</p>
-            </div>
+.stats {
+display: flex;
+justify-content: space-around;
+padding: 16px 0;
+margin-bottom: 22px;
+border-top: 1px solid #e5e7eb;
+border-bottom: 1px solid #e5e7eb;
+}
 
-            <div>
-                <h2>0</h2>
-                <p>Followers</p>
-            </div>
+.stats h2 {
+margin: 0;
+font-size: 1.4rem;
+color: #4f46e5;
+}
 
-            <div>
-                <h2>0</h2>
-                <p>Following</p>
-            </div>
+.stats p {
+margin: 2px 0 0 0;
+font-size: 0.8rem;
+color: #9ca3af;
+text-transform: uppercase;
+letter-spacing: 0.05em;
+}
 
-        </div>
+.btn-save {
+width: 100%;
+padding: 12px;
+border: none;
+border-radius: 999px;
+background: linear-gradient(135deg, #6366f1, #8b5cf6);
+color: #ffffff;
+font-size: 1rem;
+font-weight: 600;
+cursor: pointer;
+transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
 
-        <button class="btn-save">
-            Edit Profile
-        </button>
+.btn-save:hover {
+transform: translateY(-2px);
+box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+}
 
-    </div>
+/* ---------- Blazor error UI ---------- */
 
-</div>
+#blazor-error-ui {
+background: lightyellow;
+bottom: 0;
+box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+display: none;
+left: 0;
+padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+position: fixed;
+width: 100%;
+z-index: 1000;
+}
+
+#blazor-error-ui .dismiss {
+cursor: pointer;
+position: absolute;
+right: 0.75rem;
+top: 0.5rem;
+}

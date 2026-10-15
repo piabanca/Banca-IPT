@@ -1,0 +1,38 @@
+﻿<nav class="navbar navbar-dark bg-dark px-3">
+    <a class="navbar-brand" href="">Banca Mobile App</a>
+
+    <button class="navbar-toggler" type="button" @onclick="ToggleNavMenu" title="Navigation menu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="@NavMenuCssClass w-100" @onclick="ToggleNavMenu">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                    My Profile
+                </NavLink>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass
+    {
+        get
+        {
+            if (collapseNavMenu)
+            {
+                return "collapse";
+            }
+            return "";
+        }
+    }
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

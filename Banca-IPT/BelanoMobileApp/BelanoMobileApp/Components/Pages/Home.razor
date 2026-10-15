@@ -1,0 +1,302 @@
+﻿@page "/"
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+        background: #f8fafc;
+    }
+
+    .profile-wrapper {
+        max-width: 1000px;
+        margin: 30px auto;
+        padding: 0 20px;
+        text-align: center;
+    }
+
+    /* Cover Banner */
+    .banner {
+        width: 100%;
+        height: 280px;
+        background: url("Image/profile12.jpg");
+        background-size: cover;
+        background-position: center;
+        border-radius: 20px;
+        position: relative;
+        margin-bottom: 100px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+
+    /* Profile Picture */
+    .profile-pic {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        border: 6px solid white;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: -90px;
+        background: white;
+        object-fit: cover;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    }
+
+    .full-name {
+        font-size: 36px;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 8px;
+    }
+
+    .course {
+        font-size: 17px;
+        color: #475569;
+        font-weight: 500;
+        margin-bottom: 12px;
+    }
+
+    .divider-line {
+        width: 140px;
+        height: 2px;
+        background: #cbd5e1;
+        margin: 0 auto 15px;
+        position: relative;
+    }
+
+        .divider-line::after {
+            content: "";
+            color: #0ea5e9;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: #f8fafc;
+            padding: 0 12px;
+        }
+
+    .quote {
+        font-size: 16px;
+        color: #64748b;
+        font-style: italic;
+        margin-bottom: 25px;
+    }
+
+    .contact-details {
+        display: flex;
+        justify-content: center;
+        gap: 25px;
+        flex-wrap: wrap;
+        font-size: 15px;
+        color: #475569;
+        margin-bottom: 35px;
+    }
+
+    .stats-grid {
+        display: flex;
+        justify-content: center;
+        gap: 45px;
+        flex-wrap: wrap;
+        margin-bottom: 40px;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 32px;
+        font-weight: 700;
+        color: #0ea5e9;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        font-size: 14px;
+        color: #718096;
+    }
+
+    .content-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+        margin-bottom: 35px;
+        text-align: left;
+    }
+
+    .section-card {
+        background: white;
+        padding: 25px;
+        border-radius: 16px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+    }
+
+    .section-title {
+        font-size: 19px;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 15px;
+    }
+
+    .section-text {
+        font-size: 15px;
+        color: #475569;
+        line-height: 1.7;
+    }
+
+    .hobby-list {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 10px;
+    }
+
+    .hobby-tag {
+        background: #e0f2fe;
+        color: #0369a1;
+        padding: 10px;
+        border-radius: 8px;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .gallery-title {
+        font-size: 22px;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .photo-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    .gallery-img {
+        width: 100%;
+        height: 170px;
+        object-fit: cover;
+        border-radius: 12px;
+        transition: 0.2s;
+    }
+
+    .video-block {
+        max-width: 650px;
+        margin: 0 auto;
+        background: white;
+        padding: 20px;
+        border-radius: 16px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+    }
+
+    .video-title {
+        font-size: 17px;
+        font-weight: 500;
+        color: #0ea5e9;
+        margin-bottom: 12px;
+        text-align: center;
+    }
+
+    .my-video {
+        width: 100%;
+        border-radius: 10px;
+    }
+
+    @@media (max-width: 768px) {
+        .content-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .hobby-list {
+            grid-template-columns: repeat(2,1fr);
+        }
+
+        .photo-row {
+            grid-template-columns: repeat(2,1fr);
+        }
+
+        .stats-grid {
+            gap: 25px;
+        }
+    }
+</style>
+
+<div class="profile-wrapper">
+    <div class="banner">
+        <!-- New Profile Picture -->
+        <img src="Image/Profile.jpg" class="profile-pic" alt="Jonnah Mae Belano">
+    </div>
+
+    <h1 class="full-name">Jonnah Mae Belano</h1>
+    <p class="course">IT Student | College of Computing and Information Sciences</p>
+    <div class="divider-line"></div>
+    <p class="quote">"Expect Nothing, Appreciate Everything."</p>
+
+    <div class="contact-details">
+        <span>📍 Alamada, North Cotabato</span>
+        <span> ID Number 24-0752</span>
+        <span>✉ jonnahonaleb@gmail.com</span>
+        <span>📞 09639293388</span>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-item">
+            <div class="stat-number">15</div>
+            <div class="stat-label">Following</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">5,000</div>
+            <div class="stat-label">Followers</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">560</div>
+            <div class="stat-label">Friends</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">10</div>
+            <div class="stat-label">Projects</div>
+        </div>
+    </div>
+
+    <div class="content-grid">
+        <div class="section-card">
+            <h3 class="section-title">👋 About Me</h3>
+            <p class="section-text">
+                Im Jonnah Mae Cabaya Belano, a 3rd year Student of Southern Christian College. Taking Bachelor of Science in Information Technology.
+                <br><br>
+                I am a hardworking student who loves to learn from mistakes and improve every day. My goal is to finish my studies and become a successful IT professional. I am passionate about technology and always eager to explore new trends in the IT field.
+            </p>
+        </div>
+
+        <div class="section-card">
+            <h3 class="section-title">✨ My Hobbies & Interests</h3>
+            <div class="hobby-list">
+                <div class="hobby-tag">🎧 Listening to Music</div>
+                <div class="hobby-tag">📚 Reading Books</div>
+                <div class="hobby-tag">🎮 Playing Online Games</div>
+                <div class="hobby-tag">✍️ Writing Notes</div>
+                <div class="hobby-tag">🌿 Travel</div>
+                <div class="hobby-tag">🎬 Watching Movies</div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="gallery-title">📸 My Favorite Moments</h3>
+    <div class="photo-row">
+        <img src="Image/profile1.jpg" class="gallery-img" alt="School">
+        <img src="Image/profile110.jpg" class="gallery-img" alt="Learning">
+        <img src="Image/profile3.jpg" class="gallery-img" alt="Friends">
+        <img src="Image/profile4.jpg" class="gallery-img" alt="Travel">
+    </div>
+</div>
+
+   
