@@ -370,4 +370,27 @@ h1 {
     .button-group {
         gap: 12px;
     }
+.quote-card .quote-text {
+    font-style: italic;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin: 10px 0 6px 0;
+}
+
+.quote-card .quote-author {
+    text-align: right;
+    font-weight: 600;
+    margin: 0 0 12px 0;
+}
+
+.quote-card .quote-error {
+    color: #c0392b;
+    margin: 10px 0;
+}
+
+.quote-card .quote-btn {
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
 }

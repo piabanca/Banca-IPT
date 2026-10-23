@@ -1,0 +1,387 @@
+﻿@page "/"
+
+@using System.Net.Http.Json
+@inject HttpClient Http
+@rendermode InteractiveServer
+
+<PageTitle>My Profile</PageTitle>
+
+<link href="css/Profile.css" rel="stylesheet" />
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+
+<div class="profile-page">
+
+    <!-- COVER PHOTO -->
+    <div class="cover">
+        <img src="images/cover-photo.jpg" alt="Cover Photo" />
+    </div>
+
+
+    <!-- PROFILE CARD -->
+    <div class="profile-card">
+
+        <!-- PROFILE IMAGE -->
+        <img src="images/profile.jpg"
+             class="profile-img"
+             alt="Profile Picture" />
+
+
+        @if (isLoading)
+        {
+            <div class="loading">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                Loading profile...
+            </div>
+        }
+        else if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="error">
+                @errorMessage
+            </div>
+        }
+        else if (!isEditing)
+        {
+            <!-- VIEW PROFILE -->
+
+            <h1>@profile.FullName</h1>
+
+            <span class="Program">
+                @profile.Program
+            </span>
+
+
+            <div class="heart-line">
+                <hr />
+                <i class="fa-solid fa-heart"></i>
+                <hr />
+            </div>
+
+
+            <!-- BIO -->
+            <p class="bio">
+                @profile.Bio
+            </p>
+
+
+            <!-- CONTACT INFORMATION -->
+            <div class="contact">
+
+                <div class="contact-box">
+                    <i class="fa-solid fa-location-dot"></i>
+                    @profile.Location
+                </div>
+
+                <div class="contact-box">
+                    <i class="fa-solid fa-envelope"></i>
+                    @profile.Email
+                </div>
+
+            </div>
+
+
+            <!-- STATISTICS -->
+            <div class="stats">
+
+                <div class="stat">
+                    <i class="fa-solid fa-folder"></i>
+                    <h2>@profile.Projects</h2>
+                    <p>Projects</p>
+                </div>
+
+                <div class="stat">
+                    <i class="fa-solid fa-users"></i>
+                    <h2>@profile.Followers</h2>
+                    <p>Followers</p>
+                </div>
+
+                <div class="stat">
+                    <i class="fa-solid fa-user"></i>
+                    <h2>@profile.Following</h2>
+                    <p>Following</p>
+                </div>
+
+            </div>
+
+
+            <!-- EDIT BUTTON -->
+            <button class="edit-btn"
+                    type="button"
+                    @onclick="EditProfile">
+
+                <i class="fa-solid fa-pen"></i>
+                Edit Profile
+
+            </button>
+
+        }
+        else
+        {
+            <!-- EDIT PROFILE -->
+
+            <EditForm Model="profile"
+                      OnValidSubmit="SaveProfile">
+
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <InputText class="form-control"
+                               @bind-Value="profile.FullName" />
+                </div>
+
+                <div class="form-group">
+                    <label>Program</label>
+                    <InputText class="form-control"
+                               @bind-Value="profile.Program" />
+                </div>
+
+                <div class="form-group">
+                    <label>Bio</label>
+                    <InputTextArea class="form-control"
+                                   @bind-Value="profile.Bio" />
+                </div>
+
+                <div class="form-group">
+                    <label>Location</label>
+                    <InputText class="form-control"
+                               @bind-Value="profile.Location" />
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <InputText class="form-control"
+                               @bind-Value="profile.Email" />
+                </div>
+
+                @if (!string.IsNullOrEmpty(saveError))
+                {
+                    <div class="error">
+                        @saveError
+                    </div>
+                }
+
+                <div class="button-group">
+
+                    <button class="save-btn"
+                            type="submit"
+                            disabled="@isSaving">
+
+                        @if (isSaving)
+                        {
+                            <span>
+                                <i class="fa-solid fa-spinner fa-spin"></i>
+                                Saving...
+                            </span>
+                        }
+                        else
+                        {
+                            <span>
+                                <i class="fa-solid fa-check"></i>
+                                Save
+                            </span>
+                        }
+
+                    </button>
+
+                    <button class="cancel-btn"
+                            type="button"
+                            @onclick="CancelEdit"
+                            disabled="@isSaving">
+
+                        <i class="fa-solid fa-xmark"></i>
+                        Cancel
+
+                    </button>
+
+                </div>
+
+            </EditForm>
+        }
+
+    </div>
+
+
+    <!-- ABOUT ME -->
+
+    <div class="bottom">
+
+        <div class="card">
+
+            <h2>
+                <i class="fa-solid fa-user"></i>
+                About Me
+            </h2>
+
+            <p>
+                I enjoy learning new things, and spending my free time
+                watching movies, listening to music, playing mobile games,
+                and reading books.
+            </p>
+
+        </div>
+
+
+        <!-- HOBBIES -->
+
+        <div class="card">
+
+            <h2>
+                <i class="fa-solid fa-star"></i>
+                My Hobbies
+            </h2>
+
+            <div class="hobbies">
+
+                <div class="hobby">
+                    <i class="fa-solid fa-film"></i>
+                    Watching Movies
+                </div>
+
+                <div class="hobby">
+                    <i class="fa-solid fa-music"></i>
+                    Listening to Music
+                </div>
+
+                <div class="hobby">
+                    <i class="fa-solid fa-gamepad"></i>
+                    Mobile Games
+                </div>
+
+                <div class="hobby">
+                    <i class="fa-solid fa-book"></i>
+                    Reading Books
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@code {
+
+    // STATE
+
+    private ProfileModel profile = new();
+    private ProfileModel backup = new();
+
+    private bool isLoading = true;
+    private bool isEditing = false;
+    private bool isSaving = false;
+
+    private string errorMessage = "";
+    private string saveError = "";
+
+
+    // LOAD PROFILE FROM API (GET api/Profile)
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var result = await Http.GetFromJsonAsync<ProfileModel>("api/Profile");
+
+            if (result != null)
+            {
+                profile = result;
+            }
+            else
+            {
+                errorMessage = "No profile found.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Unable to load profile: " + ex.Message;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+
+    // START EDITING (keep a copy so Cancel can restore it)
+
+    private void EditProfile()
+    {
+        backup = Clone(profile);
+        saveError = "";
+        isEditing = true;
+    }
+
+
+    // SAVE PROFILE (POST api/Profile)
+
+    private async Task SaveProfile()
+    {
+        isSaving = true;
+        saveError = "";
+
+        try
+        {
+            var response = await Http.PostAsJsonAsync("api/Profile", profile);
+
+            if (response.IsSuccessStatusCode)
+            {
+                isEditing = false;
+            }
+            else
+            {
+                saveError = "Unable to save profile (" + (int)response.StatusCode + ").";
+            }
+        }
+        catch (Exception ex)
+        {
+            saveError = "Unable to save profile: " + ex.Message;
+        }
+        finally
+        {
+            isSaving = false;
+        }
+    }
+
+
+    // CANCEL EDIT (restore the old values)
+
+    private void CancelEdit()
+    {
+        profile = backup;
+        saveError = "";
+        isEditing = false;
+    }
+
+
+    private static ProfileModel Clone(ProfileModel source)
+    {
+        return new ProfileModel
+        {
+            FullName = source.FullName,
+            Program = source.Program,
+            Bio = source.Bio,
+            Location = source.Location,
+            Email = source.Email,
+            Projects = source.Projects,
+            Followers = source.Followers,
+            Following = source.Following
+        };
+    }
+
+
+    // PROFILE MODEL
+
+    public class ProfileModel
+    {
+        public string FullName { get; set; } = "";
+        public string Program { get; set; } = "";
+        public string Bio { get; set; } = "";
+        public string Location { get; set; } = "";
+        public string Email { get; set; } = "";
+        public string Projects { get; set; } = "";
+        public string Followers { get; set; } = "";
+        public string Following { get; set; } = "";
+    }
+
+}

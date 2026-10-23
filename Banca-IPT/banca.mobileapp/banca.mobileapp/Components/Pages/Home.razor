@@ -191,7 +191,7 @@
     </div>
 
 
-    <!-- ABOUT ME + HOBBIES -->
+    <!-- ABOUT ME + HOBBIES + STOIC QUOTE -->
 
     <div class="bottom">
 
@@ -244,6 +244,44 @@
 
         </div>
 
+
+        <!-- STOIC QUOTE -->
+        <div class="card quote-card">
+
+            <h2>
+                <i class="fa-solid fa-quote-left"></i>
+                Stoic Quote
+            </h2>
+
+            @if (quoteLoading)
+            {
+                <p>
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    Getting quote...
+                </p>
+            }
+            else if (!string.IsNullOrEmpty(quoteError))
+            {
+                <p class="quote-error">@quoteError</p>
+            }
+            else if (!string.IsNullOrEmpty(quote))
+            {
+                <p class="quote-text">&ldquo;@quote&rdquo;</p>
+                <p class="quote-author">&mdash; @author</p>
+            }
+
+            <button class="quote-btn"
+                    type="button"
+                    @onclick="GetQuote"
+                    disabled="@quoteLoading">
+
+                <i class="fa-solid fa-rotate"></i>
+                New Quote
+
+            </button>
+
+        </div>
+
     </div>
 
 </div>
@@ -253,6 +291,8 @@
     // Palitan kung iba ang route ng ProfileController mo
     private const string ApiUrl = "api/profile";
 
+    private const string QuoteUrl = "https://stoic.tekloon.net/stoic-quote";
+
     private ProfileModel profile = new ProfileModel();
     private ProfileModel backup = new ProfileModel();
 
@@ -261,9 +301,16 @@
     private bool isSaving = false;
     private string errorMessage = "";
 
+    // STOIC QUOTE DATA
+    private string quote = "";
+    private string author = "";
+    private string quoteError = "";
+    private bool quoteLoading = false;
+
     protected override async Task OnInitializedAsync()
     {
         await LoadProfile();
+        await GetQuote();
     }
 
     private async Task LoadProfile()
@@ -283,17 +330,44 @@
         catch (Exception ex)
         {
             errorMessage = "Could not load profile: " + ex.GetType().Name + " - " + ex.Message;
-
-            if (ex.InnerException != null)
+            if (Http.BaseAddress != null)
             {
-                errorMessage += " | Inner: " + ex.InnerException.GetType().Name + " - " + ex.InnerException.Message;
+                errorMessage += " | URL: " + new Uri(Http.BaseAddress, ApiUrl);
             }
-
-            errorMessage += " | URL: " + new Uri(Http.BaseAddress, ApiUrl);
         }
+
         finally
         {
             isLoading = false;
+        }
+    }
+
+    private async Task GetQuote()
+    {
+        quoteLoading = true;
+        quoteError = "";
+
+        try
+        {
+            var response = await Http.GetFromJsonAsync<StoicResponse>(QuoteUrl);
+
+            if (response?.Data != null)
+            {
+                quote = response.Data.Quote;
+                author = response.Data.Author;
+            }
+            else
+            {
+                quoteError = "No quote found.";
+            }
+        }
+        catch
+        {
+            quoteError = "Unable to get quote.";
+        }
+        finally
+        {
+            quoteLoading = false;
         }
     }
 
@@ -327,7 +401,7 @@
 
         try
         {
-            var response = await Http.PutAsJsonAsync(ApiUrl, profile);
+            var response = await Http.PostAsJsonAsync(ApiUrl, profile);
 
             if (response.IsSuccessStatusCode)
             {
@@ -343,9 +417,9 @@
         {
             errorMessage = "Save failed: " + ex.Message;
 
-            if (ex.InnerException != null)
+            if (Http.BaseAddress != null)
             {
-                errorMessage += " | Inner: " + ex.InnerException.Message;
+                errorMessage += " | URL: " + new Uri(Http.BaseAddress, ApiUrl);
             }
         }
         finally
@@ -364,5 +438,16 @@
         public int Projects { get; set; }
         public int Followers { get; set; }
         public int Following { get; set; }
+    }
+
+    public class StoicResponse
+    {
+        public StoicQuote? Data { get; set; }
+    }
+
+    public class StoicQuote
+    {
+        public string Author { get; set; } = "";
+        public string Quote { get; set; } = "";
     }
 }

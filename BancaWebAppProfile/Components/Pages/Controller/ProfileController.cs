@@ -4,7 +4,7 @@ namespace BancaWebAppProfile.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProfileController : ControllerBase
+    public class ProfileController : ControllerBase    // The profilecontroller is the endpoint of every data in the profile. The HttpGet method is used to retrieve data. 
     {
         // static para hindi mag-reset sa bawat request
         private static ProfileData profile = new ProfileData
@@ -25,10 +25,10 @@ namespace BancaWebAppProfile.Controllers
         {
             try { return Ok(profile); }
             catch (Exception ex) { return BadRequest("Error: " + ex.Message); }
-        }
+        } 
 
         // POST api/Profile  (para sa Save button)
-        [HttpPost]
+        [HttpPost] 
         public IActionResult SaveProfile([FromBody] ProfileData updated)
         {
             try
@@ -43,7 +43,7 @@ namespace BancaWebAppProfile.Controllers
                 profile.Bio = updated.Bio;
                 profile.Location = updated.Location;
                 profile.Email = updated.Email;
-
+            
                 return Ok(profile);
             }
             catch (Exception ex) { return BadRequest("Error: " + ex.Message); }
@@ -108,7 +108,7 @@ namespace BancaWebAppProfile.Controllers
 
     public class ProfileData
     {
-        public string FullName { get; set; } = "";
+        public string FullName { get; set; } = "";   // Stores data information 
         public string Program { get; set; } = "";
         public string Bio { get; set; } = "";
         public string Location { get; set; } = "";

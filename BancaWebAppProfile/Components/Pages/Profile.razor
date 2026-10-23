@@ -327,6 +327,52 @@
 
         </div>
 
+
+        <!-- ============================= -->
+        <!-- STOIC QUOTE -->
+        <!-- ============================= -->
+
+        <div class="card quote-card">
+
+            <h2>
+
+                <i class="fa-solid fa-quote-left"></i>
+
+                Stoic Quote
+
+            </h2>
+
+            @if (quoteLoading)
+            {
+                <p>
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    Getting quote...
+                </p>
+            }
+            else if (!string.IsNullOrEmpty(quoteError))
+            {
+                <p class="quote-error">@quoteError</p>
+            }
+            else if (!string.IsNullOrEmpty(quote))
+            {
+                <p class="quote-text">&ldquo;@quote&rdquo;</p>
+
+                <p class="quote-author">&mdash; @author</p>
+            }
+
+            <button class="quote-btn"
+                    type="button"
+                    @onclick="GetQuote"
+                    disabled="@quoteLoading">
+
+                <i class="fa-solid fa-rotate"></i>
+
+                New Quote
+
+            </button>
+
+        </div>
+
     </div>
 
 </div>
@@ -349,11 +395,22 @@
     private ProfileModel profile = new();
 
 
+    // STOIC QUOTE DATA
+
+    private string quote = "";
+
+    private string author = "";
+
+    private string quoteError = "";
+
+    private bool quoteLoading = false;
+
+
     // =====================================
     // GET PROFILE FROM API
     // =====================================
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()   
     {
         try
         {
@@ -376,6 +433,45 @@
         finally
         {
             isLoading = false;
+        }
+
+        // load a quote automatically when the page opens
+        await GetQuote();
+    }
+
+
+    // =====================================
+    // GET STOIC QUOTE
+    // =====================================
+
+    private async Task GetQuote()
+    {
+        quoteLoading = true;
+        quoteError = "";
+
+        try
+        {
+            var response = await Http.GetFromJsonAsync<StoicResponse>(
+                "https://stoic.tekloon.net/stoic-quote"
+            );
+
+            if (response?.Data != null)
+            {
+                quote = response.Data.Quote;
+                author = response.Data.Author;
+            }
+            else
+            {
+                quoteError = "No quote found.";
+            }
+        }
+        catch
+        {
+            quoteError = "Unable to get quote.";
+        }
+        finally
+        {
+            quoteLoading = false;
         }
     }
 
@@ -484,5 +580,23 @@
         public int Followers { get; set; }
 
         public int Following { get; set; }
+    }
+
+
+    // =====================================
+    // STOIC API RESPONSE
+    // =====================================
+
+    public class StoicResponse
+    {
+        public StoicQuote? Data { get; set; }
+    }
+
+
+    public class StoicQuote
+    {
+        public string Author { get; set; } = "";
+
+        public string Quote { get; set; } = "";
     }
 }
