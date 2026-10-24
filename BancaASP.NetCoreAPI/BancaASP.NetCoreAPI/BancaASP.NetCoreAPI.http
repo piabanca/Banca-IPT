@@ -1,6 +1,0 @@
-@BancaASP.NetCoreAPI_HostAddress = http://localhost:5253
-
-GET {{BancaASP.NetCoreAPI_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
