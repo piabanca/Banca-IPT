@@ -1,0 +1,135 @@
+﻿@page "/foodorder"
+@rendermode InteractiveServer
+@inject NavigationManager Navigation
+
+<div class="order-page">
+
+    <button type="button" class="btn-back" @onclick="GoBack">← </button>
+
+    <div class="order-layout">
+
+        <div class="product-card">
+
+            <div class="flavor-selector">
+                @foreach (var flavor in Flavors)
+                {
+                    <button type="button" class="flavor-btn @(SelectedFlavor == flavor ? "flavor-btn-active" : "")"
+                            @onclick="() => SelectFlavor(flavor)">
+                        @flavor
+                    </button>
+                }
+            </div>
+
+            <img src="@FlavorImages[SelectedFlavor]" class="product-img" />
+
+            <p class="subtitle">@SelectedFlavor flavor, made fresh</p>
+            <p class="price">₱35.00</p>
+
+            <div class="qty-control">
+                <button type="button" class="qty-btn" @onclick="DecreaseQty">−</button>
+                <span class="qty-value">@Quantity</span>
+                <button type="button" class="qty-btn qty-btn-fill" @onclick="IncreaseQty">+</button>
+            </div>
+
+            <button type="button" class="btn-add" @onclick="AddToOrder">Add to Order</button>
+        </div>
+
+        <div class="summary-card">
+            <h3>Your Order</h3>
+
+            @if (OrderQuantity == 0)
+            {
+                <p class="empty-text">No items yet.</p>
+            }
+            else
+            {
+                <div class="receipt-item">
+                    <img src="@FlavorImages[OrderFlavor]" class="receipt-img" />
+                    <div class="receipt-details">
+                        <span class="receipt-name">@OrderFlavor Milkshake</span>
+                        <span class="receipt-qty">Qty: @OrderQuantity</span>
+                        <span class="receipt-price">₱@((OrderQuantity * UnitPrice).ToString("0.00"))</span>
+                    </div>
+                    <button type="button" class="remove-btn" @onclick="RemoveItem">×</button>
+                </div>
+
+                <hr />
+
+                <div class="summary-total">
+                    <strong>Order Total:</strong>
+                    <strong>₱@((OrderQuantity * UnitPrice).ToString("0.00"))</strong>
+                </div>
+            }
+            <button type="button" class="btn-place" disabled="@(OrderQuantity == 0)" @onclick="PlaceOrder">
+                Payment
+            </button>
+
+            @if (!string.IsNullOrEmpty(orderMessage))
+            {
+                <div class="alert-success">@orderMessage</div>
+            }
+        </div>
+
+    </div>
+</div>
+
+@code {
+    private List<string> Flavors = new() { "Vanilla", "Chocolate", "Strawberry", "Cookies & Cream" };
+    private string SelectedFlavor = "Vanilla";
+    private string OrderFlavor = "";
+
+    private Dictionary<string, string> FlavorImages = new()
+    {
+        { "Vanilla", "Images/FlavorImages/vanilla.jpg" },
+        { "Chocolate", "Images/FlavorImages/chocolate.jpg" },
+        { "Strawberry", "Images/FlavorImages/strawberry.jpg" },
+        { "Cookies & Cream", "Images/FlavorImages/cookiesandcream.jpg" }
+    };
+
+    private int Quantity { get; set; } = 1;
+    private int OrderQuantity = 0;
+    private decimal UnitPrice = 35.00m;
+    private string orderMessage = string.Empty;
+
+    private void SelectFlavor(string flavor)
+    {
+        SelectedFlavor = flavor;
+    }
+
+    private void IncreaseQty() => Quantity++;
+
+    private void DecreaseQty()
+    {
+        if (Quantity > 1) Quantity--;
+    }
+
+    private void AddToOrder()
+    {
+        if (Quantity > 0)
+        {
+            OrderQuantity += Quantity;
+            OrderFlavor = SelectedFlavor;
+            orderMessage = string.Empty;
+        }
+    }
+
+    private void RemoveItem()
+    {
+        OrderQuantity = 0;
+        orderMessage = string.Empty;
+    }
+
+    private void PlaceOrder()
+    {
+        if (OrderQuantity > 0)
+        {
+            decimal total = OrderQuantity * UnitPrice;
+            orderMessage = $"Order placed! {OrderQuantity} {OrderFlavor} Milkshake(s) - Total: ₱{total:0.00}";
+        }
+    }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo("/");
+    }
+}

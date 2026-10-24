@@ -1,0 +1,25 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@inject NavigationManager Navigation
+
+<div class="welcome-page">
+    <div class="welcome-card">
+        <img src="Images/shakehub-logo.png" alt="The Shake Hub logo" class="logo-img" />
+
+        <h1 class="brand-title">The Shake Hub</h1>
+        <p class="tagline">FRESH AND CREAMY</p>
+
+        <p class="welcome-text">Welcome! Ready to order?</p>
+
+        <button class="btn-start" @onclick="StartOrder">
+            Start New Order →
+        </button>
+    </div>
+</div>
+
+@code {
+    private void StartOrder()
+    {
+        Navigation.NavigateTo("/foodorder");
+    }
+}
